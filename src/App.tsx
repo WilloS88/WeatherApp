@@ -1,12 +1,10 @@
 import "./index.css";
+import { InputSection } from "./components/InputSection";
 
-function App() {
+export const App = () => {
   return (
-    <div className="flex gap-5">
-      <div>test</div>
-      <div>test</div>
-    </div>
+    <main>
+      <InputSection/>
+    </main>
   );
 }
-
-export default App;
