@@ -1,30 +1,46 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
+import { StyledCard } from "./StyledCard";
 
 type WeatherProps = {
-  day: string
-  tempC: string
-  tempF: string
-}
+  main: {
+    temp: number;
+  };
+};
 
 export const InputSection = () => {
-  const [weather, setWeather] = useState<WeatherProps[]>([])
+  const [weather, setWeather] = useState<WeatherProps | undefined>();
 
-  const cityName = "Zlín"
-  const apiKey = import.meta.env.VITE_API_KEY
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`
+  const cityName = "Zlin";
+  const apiKey = import.meta.env.VITE_API_KEY;
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+
+  const url = `${baseUrl}?q=${cityName}&appid=${apiKey}`;
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(url)
-      const weatherData = (await response.json()) as WeatherProps[]
-      setWeather(weatherData)
-      console.log(weatherData);
-      console.log(weatherData.main.humidity);
-      
-    }
+      const response = await fetch(url);
+      const weatherData = (await response.json()) as WeatherProps;
+      setWeather(weatherData);
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
+
+  const tempCelsius = weather
+    ? `${(weather.main.temp - 273.15).toFixed(2)}`
+    : "";
+    const now = new Date();
+
+    const actualYear = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const date = now.getDate();
+    const dayOfWeek = now.getDay();
+
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    const monthName = months[month - 1]; 
+    const weekdayName = weekdays[dayOfWeek];
 
   return (
     <div className="m-20">
@@ -36,9 +52,18 @@ export const InputSection = () => {
         />
         <button>Search</button>
       </div>
-      <div>
-        
+      <div className="flex justify-center mt-10">
+        <div>
+          <StyledCard
+            city={cityName}
+            tempC={tempCelsius}
+            weekDay={weekdayName}
+            month={monthName}
+            dateDay={date}
+            year={actualYear}
+          />
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
